@@ -165,3 +165,17 @@
 	else { win.store = store }
 
 })(Function('return this')());
+var localStore = {
+    set: function(key, val, exp) {
+        store.set(key, { val:val, exp:exp, time:new Date().getTime() })
+    },
+    get: function(key) {
+        var info = store.get(key)
+        if (!info) { return null }
+        if (new Date().getTime() - info.time > info.exp) {
+            store.remove(key);
+            return null;
+        }
+        return info.val
+    }
+}
